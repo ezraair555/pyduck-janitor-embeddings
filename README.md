@@ -1,11 +1,22 @@
 # pyduck-janitor-embeddings
 
+[![PyPI version](https://img.shields.io/pypi/v/pyduck-janitor-embeddings.svg)](https://pypi.org/project/pyduck-janitor-embeddings/)
+[![Python versions](https://img.shields.io/pypi/pyversions/pyduck-janitor-embeddings.svg)](https://pypi.org/project/pyduck-janitor-embeddings/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/ezraair555/pyduck-janitor-embeddings/actions/workflows/ci.yml/badge.svg)](https://github.com/ezraair555/pyduck-janitor-embeddings/actions/workflows/ci.yml)
+
 Bundled embedding models for [pyduck-janitor](https://github.com/ezraair555/pyduck-janitor).
 
 This companion wheel ships sentence-transformers model weights inside the
 package so `pyduck_janitor.embed_install()` works **without contacting
 HuggingFace**. It's the offline install path for air-gapped machines, CI,
 and anyone who'd rather not pull weights at first use.
+
+## License
+
+- The companion wheel's code (this `pyduck_janitor_embeddings/` package) is **MIT**, matching the parent `pyduck-janitor`.
+- The bundled model weights are redistributed under their **upstream license** (Apache 2.0 for `all-MiniLM-L6-v2`); a `NOTICE` file inside each model directory documents the source URL and full attribution.
+- See `data/embeddings/<slug>/NOTICE` inside the installed wheel for the per-model trail.
 
 ## Install
 

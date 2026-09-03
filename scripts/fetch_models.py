@@ -9,6 +9,11 @@ fetch from HuggingFace at first use.
 Usage:
     python scripts/fetch_models.py
     python -m build   # then upload to PyPI
+
+License attribution: each bundled model gets a NOTICE file inside
+its data dir naming the model, the upstream URL, the license, and a
+copy of the upstream LICENSE when one is available on the Hub.
+This keeps the redistribution trail auditable inside the wheel.
 """
 
 from __future__ import annotations
@@ -18,25 +23,31 @@ import sys
 from pathlib import Path
 
 # Models to bundle. Add to this list to include more.
+# (huggingface_repo_id, display_name, license, license_filename)
 MODELS = [
-    "sentence-transformers/all-MiniLM-L6-v2",
-    # "BAAI/bge-small-en-v1.5",
+    (
+        "sentence-transformers/all-MiniLM-L6-v2",
+        "sentence-transformers/all-MiniLM-L6-v2",
+        "Apache-2.0",
+        "LICENSE",
+    ),
+    # ("BAAI/bge-small-en-v1.5", "BAAI/bge-small-en-v1.5", "MIT", "LICENSE"),
 ]
 
 
-def fetch(model: str, target_root: Path) -> Path:
+def fetch(model_id: str, target_root: Path) -> Path:
     from huggingface_hub import snapshot_download
 
-    slug = model.replace("/", "__").replace("@", "_at_")
+    slug = model_id.replace("/", "__").replace("@", "_at_")
     target = target_root / slug
     if target.exists():
         print(f"  already present: {target}")
         return target
 
     target.parent.mkdir(parents=True, exist_ok=True)
-    print(f"  downloading {model} -> {target}")
+    print(f"  downloading {model_id} -> {target}")
     snapshot_download(
-        repo_id=model,
+        repo_id=model_id,
         local_dir=str(target),
         local_dir_use_symlinks=False,
         allow_patterns=[
@@ -48,21 +59,53 @@ def fetch(model: str, target_root: Path) -> Path:
             "vocab.*",
             "merges.txt",
             "special_tokens_map.json",
+            "LICENSE",
+            "LICENSE.*",
+            "NOTICE",
+            "NOTICE.*",
         ],
     )
     return target
 
 
+def write_notice(
+    target: Path, display_name: str, license_name: str, license_filename: str | None
+) -> None:
+    """Write a NOTICE file naming the upstream source and license."""
+    upstream_url = f"https://huggingface.co/{display_name}"
+    text = (
+        f"This directory contains model weights redistributed from\n"
+        f"  {upstream_url}\n\n"
+        f"Model: {display_name}\n"
+        f"License: {license_name}\n"
+    )
+    if license_filename is not None:
+        text += (
+            f"\nThe full upstream LICENSE is included in this directory\n"
+            f"as '{license_filename}'.\n"
+        )
+    text += (
+        "\npyduck-janitor-embeddings is MIT-licensed. The bundled weights\n"
+        "are governed by the upstream license above; redistribution is\n"
+        "permitted under the terms of that license.\n"
+    )
+    (target / "NOTICE").write_text(text)
+    print(f"  wrote NOTICE: {target / 'NOTICE'}")
+
+
 def main() -> int:
     src_root = Path(__file__).resolve().parent.parent
-    target_root = src_root / "src" / "pyduck_janitor_embeddings" / "data" / "embeddings"
+    target_root = (
+        src_root / "src" / "pyduck_janitor_embeddings" / "data" / "embeddings"
+    )
     target_root.mkdir(parents=True, exist_ok=True)
 
-    for m in MODELS:
+    for model_id, display, license_name, license_filename in MODELS:
         try:
-            fetch(m, target_root)
+            target = fetch(model_id, target_root)
+            write_notice(target, display, license_name, license_filename)
         except Exception as exc:
-            print(f"  FAILED: {m}: {exc}", file=sys.stderr)
+            print(f"  FAILED: {model_id}: {exc}", file=sys.stderr)
             return 1
     print("done.")
     return 0

@@ -34,4 +34,13 @@ Homepage = "https://github.com/ezraair555/pyduck-janitor"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"pyduck_janitor_embeddings" = ["data/embeddings/**/*.json", "data/embeddings/**/*.txt", "data/embeddings/**/*.safetensors", "data/embeddings/**/*.bin"]
+"pyduck_janitor_embeddings" = [
+    "data/embeddings/**/*.json",
+    "data/embeddings/**/*.txt",
+    "data/embeddings/**/*.safetensors",
+    "data/embeddings/**/*.bin",
+    "data/embeddings/**/NOTICE",
+    "data/embeddings/**/LICENSE",
+    "data/embeddings/**/LICENSE.*",
+    "data/embeddings/**/NOTICE.*",
+]
