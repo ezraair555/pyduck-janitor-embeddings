@@ -84,11 +84,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[build]"
           python scripts/fetch_models.py
-      - name: Install pyduck-janitor (runtime dep)
-        run: |
-          # pyduck-janitor isn't on PyPI yet; once it is, this line
-          # can be removed (the wheel dep will satisfy it).
-          pip install git+https://github.com/ezraair555/pyduck-janitor.git@main
       - name: Install build tooling
         run: |
           pip install build
