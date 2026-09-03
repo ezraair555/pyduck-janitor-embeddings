@@ -29,15 +29,35 @@ jobs:
           cache: "pip"
       - name: Install package
         run: |
-          pip install -e .
+          pip install -e ".[build]"
+      - name: Populate bundled weights (advisory)
+        run: |
+          python scripts/fetch_models.py
       - name: Validate bundled weights (license + structure)
         run: |
           python -c "
           from pyduck_janitor_embeddings import list_bundled
           models = list_bundled()
-          assert models, 'No bundled models. Did you run scripts/fetch_models.py before building?'
+          assert models, 'No bundled models. Did fetch_models.py run?'
           for m in models:
               print(' bundled:', m)
+          # Verify each model has a NOTICE file with attribution.
+          import os
+          for m in models:
+              slug = m.replace('/', '__').replace('@', '_at_')
+              base = (
+                  'src/pyduck_janitor_embeddings/data/embeddings/' + slug
+              )
+              notice = os.path.join(base, 'NOTICE')
+              assert os.path.exists(notice), (
+                  f'Missing NOTICE for {m}; weights lack attribution.'
+              )
+              with open(notice) as f:
+                  contents = f.read()
+              assert 'huggingface.co' in contents, (
+                  f'NOTICE for {m} missing upstream URL'
+              )
+          print(' license trail OK')
           "
 
   publish:
