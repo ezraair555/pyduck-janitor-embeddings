@@ -11,6 +11,7 @@ __pycache__/
 # Bundled model weights are populated by scripts/fetch_models.py at build
 # time. Keep them out of git so the repo stays small. The NOTICE +
 # LICENSE files are also generated, but those are small text and tracked.
+src/pyduck_janitor_embeddings/data/
 src/pyduck_janitor_embeddings/data/embeddings/*/model.safetensors
 src/pyduck_janitor_embeddings/data/embeddings/*/pytorch_model.bin
 src/pyduck_janitor_embeddings/data/embeddings/*/tf_model.h5
