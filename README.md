@@ -49,6 +49,23 @@ pj.embed_list_installed()
 Model weights are redistributed under their original licenses; see
 `data/embeddings/<model>/LICENSE` inside the wheel for the full text.
 
+## Want a different model?
+
+The bundled default is fine for most tasks, but `pyduck_janitor.embed_install`
+accepts any sentence-transformers-compatible model from HuggingFace Hub:
+
+```python
+import pyduck_janitor as pj
+
+pj.embed_install("hf:BAAI/bge-small-en-v1.5")               # better quality
+pj.embed_install("hf:intfloat/multilingual-e5-small")      # multilingual
+pj.embed_install("hf:org/model@sha256:abc123...")           # pinned revision
+pj.embed_install("/opt/models/my-finetuned-encoder")        # local path
+```
+
+For gated/private models, set `HF_TOKEN` in your environment. See the
+parent project's README for the full guide.
+
 ## Rebuilding the wheel (maintainers)
 
 The weights are **not** committed to git. To populate them before a build:
