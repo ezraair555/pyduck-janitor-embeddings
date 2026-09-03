@@ -29,7 +29,10 @@ jobs:
           cache: "pip"
       - name: Install package
         run: |
-          pip install -e ".[build]"
+          pip install -e ".[build,dev]"
+      - name: Run tests
+        run: |
+          python -m pytest -q
       - name: Populate bundled weights (advisory)
         run: |
           python scripts/fetch_models.py

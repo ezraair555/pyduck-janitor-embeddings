@@ -26,6 +26,9 @@ dependencies = [
 build = [
     "huggingface_hub>=0.20",
 ]
+dev = [
+    "pytest>=7.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/ezraair555/pyduck-janitor"
