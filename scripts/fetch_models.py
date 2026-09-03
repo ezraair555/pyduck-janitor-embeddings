@@ -18,9 +18,9 @@ This keeps the redistribution trail auditable inside the wheel.
 
 from __future__ import annotations
 
-import shutil
 import sys
 from pathlib import Path
+from urllib.request import urlopen
 
 # Models to bundle. Add to this list to include more.
 # (huggingface_repo_id, display_name, license, license_filename)
@@ -33,6 +33,8 @@ MODELS = [
     ),
     # ("BAAI/bge-small-en-v1.5", "BAAI/bge-small-en-v1.5", "MIT", "LICENSE"),
 ]
+
+APACHE_LICENSE_URL = "https://www.apache.org/licenses/LICENSE-2.0.txt"
 
 
 def fetch(model_id: str, target_root: Path) -> Path:
@@ -54,7 +56,6 @@ def fetch(model_id: str, target_root: Path) -> Path:
             "*.json",
             "*.txt",
             "*.safetensors",
-            "*.bin",
             "tokenizer.*",
             "vocab.*",
             "merges.txt",
@@ -65,6 +66,12 @@ def fetch(model_id: str, target_root: Path) -> Path:
             "NOTICE.*",
         ],
     )
+    # Some Hub repos declare Apache-2.0 without committing a LICENSE file.
+    # Keep the redistribution trail complete inside the wheel.
+    license_path = target / "LICENSE"
+    if not license_path.exists():
+        with urlopen(APACHE_LICENSE_URL, timeout=30) as response:
+            license_path.write_bytes(response.read())
     return target
 
 

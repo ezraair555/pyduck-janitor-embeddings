@@ -7,7 +7,8 @@ name = "pyduck-janitor-embeddings"
 version = "0.1.0"
 description = "Bundled embedding models for pyduck-janitor"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
+requires-python = ">=3.9"
 authors = [
     {name = "EzraAir555", email = "ezraair555@gmail.com"}
 ]
@@ -15,8 +16,11 @@ keywords = ["pyduck-janitor", "embedding", "sentence-transformers", "huggingface
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "pyduck-janitor>=0.2.0",
